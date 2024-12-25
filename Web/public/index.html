@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор круга</title>
+    <style>
+        /* Основные стили страницы */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #4facfe, #00f2fe);
+            color: #fff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Поле ввода */
+        input {
+            width: 90%;
+            max-width: 400px;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        input:focus {
+            outline: none;
+            border: 2px solid #00d4ff;
+        }
+
+        /* Кнопка */
+        button {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 90%;
+            max-width: 400px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #ff4b2b, #ff416c);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(2px);
+        }
+
+        /* Результаты */
+        .result {
+            width: 90%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .result p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .result span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>Калькулятор круга</h1>
+<input id="radiusInput" type="number" placeholder="Введите радиус" oninput="validateInput()" />
+<button onclick="calculate()">Рассчитать</button>
+
+<div id="result" class="result">
+    <p><strong>Диаметр:</strong> <span id="diameter"></span></p>
+    <p><strong>Длина окружности:</strong> <span id="circumference"></span></p>
+    <p><strong>Площадь:</strong> <span id="area"></span></p>
+</div>
+
+<script>
+    function validateInput() {
+        var input = document.getElementById('radiusInput');
+        if (input.value < 0) {
+            showMessage('Радиус должен быть положительным числом!');
+            input.value = ''; // Очистка поля
+        }
+    }
+
+    function calculate() {
+        var radius = document.getElementById('radiusInput').value;
+
+        if (!radius) {
+            showMessage('Введите радиус!');
+            return;
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://10.0.2.2:4987/circle/calculate", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+
+                        if (response.error) {
+                            showMessage('Ошибка: ' + response.error);
+                        } else {
+                            document.getElementById('diameter').textContent = response.diameter;
+                            document.getElementById('circumference').textContent = response.circumference;
+                            document.getElementById('area').textContent = response.area;
+                            document.getElementById('result').style.display = 'block';
+                        }
+                    } catch (e) {
+                        showMessage('Ошибка: Некорректный ответ сервера!');
+                    }
+                } else {
+                    showMessage('Ошибка: Сервер недоступен!');
+                }
+            }
+        };
+
+        xhr.send("radius=" + radius);
+    }
+
+    function showMessage(message) {
+        if (window.Android) {
+            window.Android.showToast(message);
+        } else {
+            alert(message); // Фолбэк для браузера
+        }
+    }
+</script>
+</body>
+</html>
