@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Task5</string>
+    <string name="Url">http://10.0.2.2:4987/index.html</string>
+
 </resources>

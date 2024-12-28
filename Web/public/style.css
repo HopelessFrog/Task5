@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <link rel="stylesheet" href="style.css" type="text/css">
-    <style>
-        body {
+body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
@@ -135,21 +127,3 @@ button:active {
         background: linear-gradient(to right, #ff4b2b, #ff416c);
     }
 }
-
-    </style>
-</head>
-<body>
-
-<h3>Введите радиус круга</h3>
-<input id="radiusInput" type="number"  oninput="validateInput()" />
-<button onclick="calculate()">Рассчитать</button>
-
-<div id="result" class="result">
-    <p><strong>Диаметр:</strong> <span id="diameter"></span></p>
-    <p><strong>Длина окружности:</strong> <span id="circumference"></span></p>
-    <p><strong>Площадь:</strong> <span id="area"></span></p>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
